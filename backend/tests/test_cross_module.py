@@ -216,7 +216,9 @@ class TestDownsample:
 
     def test_quality_check(self, downsample):
         result = downsample.quality_check("DOWN-0001")
-        assert "ok" in result
+        assert result["ok"] is True
+        assert result["round_id"] == "R1"
+        assert result["mean"] == 20.0
 
 
 # ========================

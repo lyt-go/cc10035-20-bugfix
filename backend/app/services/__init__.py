@@ -45,3 +45,6 @@ SERVICES: dict[str, BaseModuleService] = {
 
 def service_for(module: str) -> BaseModuleService | None:
     return SERVICES.get(module)
+
+
+downsample_service: DownsampleService = SERVICES["downsample"]  # type: ignore[assignment]

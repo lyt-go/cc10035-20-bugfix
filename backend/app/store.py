@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.seed import SEED_ROWS
+from app.seed import SEED_AUX, SEED_ROWS
 
 
 class Store:
@@ -14,12 +14,20 @@ class Store:
         self._tables: dict[str, list[dict[str, Any]]] = {
             name: [dict(row) for row in rows] for name, rows in SEED_ROWS.items()
         }
+        # 辅助数据（降采样执行轮次、质量复查证据、质量处置单）不参与模块清单，
+        # 但同样保存在服务进程内，浏览器刷新后仍能取回。
+        self._aux: dict[str, list[dict[str, Any]]] = {
+            name: [dict(row) for row in rows] for name, rows in SEED_AUX.items()
+        }
 
     def module_names(self) -> list[str]:
         return sorted(self._tables)
 
     def rows(self, module: str) -> list[dict[str, Any]]:
         return self._tables.setdefault(module, [])
+
+    def aux_rows(self, name: str) -> list[dict[str, Any]]:
+        return self._aux.setdefault(name, [])
 
     def find(self, module: str, entry_id: int) -> dict[str, Any] | None:
         for row in self.rows(module):
